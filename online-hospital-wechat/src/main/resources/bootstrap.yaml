@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: online-hospital-wechat
+  cloud:
+    nacos:
+      config:
+        file-extension: yaml
+        server-addr: 114.67.89.253:8847
+        namespace: 7a739110-f08f-4367-841f-c4ca24e3a94e
+
