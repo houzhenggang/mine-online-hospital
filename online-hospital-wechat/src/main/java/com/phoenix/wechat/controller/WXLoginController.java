@@ -40,8 +40,9 @@ public class WXLoginController {
      */
     @RequestMapping(value = "/wxLogin", method = RequestMethod.GET)
     public String wxLogin() throws ParseException, UnsupportedEncodingException {
+        System.out.println("wxLogin");
         // 这个url的域名必须要进行再公众号中进行注册验证，这个地址是成功后的回调地址
-        String backUrl = "http://vs6ck3.natappfree.cc/wx/callBack";
+        String backUrl = "http://28o51m5650.qicp.vip/wx/callBack";
         // 第一步：用户同意授权，获取code
         String getCodeUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WXAuthUtil.APPID + "&redirect_uri="
                 + URLEncoder.encode(backUrl,"utf-8") + "&response_type=code" + "&scope=snsapi_userinfo"
