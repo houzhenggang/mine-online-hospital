@@ -27,26 +27,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.njzhyl.olhp</groupId>
-            <artifactId>online-hospital-common-core</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.njzhyl.olhp</groupId>
-            <artifactId>online-hospital-common-base</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.njzhyl.olhp</groupId>
-            <artifactId>online-hospital-common-param</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.njzhyl.olhp</groupId>
-            <artifactId>online-hospital-common-util</artifactId>
-            <version>1.0</version>
-        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
