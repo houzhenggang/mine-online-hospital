@@ -1,6 +1,11 @@
 package com.phoenix.wechat.utils;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -27,6 +32,29 @@ public class WXAuthUtil {
             jsonObject = JSON.parseObject(result);
         }
         return jsonObject;
+    }
+
+
+    public static Boolean CheckSignature(String signature, String timestamp, String nonce) throws NoSuchAlgorithmException {
+        //第一步中填写的token一致
+        String token="centos";
+
+        ArrayList<String> list=new ArrayList<String>();
+        list.add(nonce);
+        list.add(timestamp);
+        list.add(token);
+
+        //字典序排序
+        Collections.sort(list);
+        //SHA1加密
+        String checksignature=Sha1Util.getSha1((list.get(0)+list.get(1)+list.get(2)).getBytes());
+        System.out.println(signature);
+        System.out.println(checksignature);
+
+        if(checksignature.equals(signature)){
+            return true;
+        }
+        return false;
     }
 
 }

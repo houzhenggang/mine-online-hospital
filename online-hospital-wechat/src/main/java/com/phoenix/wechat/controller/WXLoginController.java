@@ -3,17 +3,18 @@ package com.phoenix.wechat.controller;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import com.phoenix.wechat.utils.WXAuthUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import com.alibaba.fastjson.JSONObject;
 
 
@@ -29,35 +30,66 @@ public class WXLoginController {
     @Autowired
     private HttpServletResponse response;
 
+
+    /**
+     * 打开开发者模式签名认证
+     * * @param signature
+     * * @param timestamp
+     * * @param nonce
+     * * @param echostr
+     * * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/verify", method = RequestMethod.GET)
+    public String defaultView(String signature, String timestamp, String nonce, String echostr) throws NoSuchAlgorithmException {
+        if (echostr == null || echostr.isEmpty()) {
+            return nonce;
+        }
+        if (WXAuthUtil.CheckSignature(signature, timestamp, nonce)) {
+            return echostr;
+        }
+        return nonce;
+    }
+
+
+
     /**
      * 公众号微信登录授权
      *
-     * @param request
-     * @param response
      * @return
      * @throws ParseException
      * @parameter
      */
     @RequestMapping(value = "/wxLogin", method = RequestMethod.GET)
-    public String wxLogin() throws ParseException, UnsupportedEncodingException {
+    @ResponseBody
+    public String wxLogin(@RequestParam Map<String,String> map) throws ParseException, IOException, NoSuchAlgorithmException {
+        System.out.println(map);
+//        Boolean isFromWeChat = WXAuthUtil.CheckSignature(map);
+//        if(isFromWeChat){
+//            return map.get("echostr");
+//        }else {
+//            return null;
+//        }
+
+
         System.out.println("wxLogin");
-        // 这个url的域名必须要进行再公众号中进行注册验证，这个地址是成功后的回调地址
+//        // 这个url的域名必须要进行再公众号中进行注册验证，这个地址是成功后的回调地址
         String backUrl = "http://28o51m5650.qicp.vip/wx/callBack";
         // 第一步：用户同意授权，获取code
+//        String getCodeUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WXAuthUtil.APPID + "&redirect_uri="
+//                + URLEncoder.encode(backUrl,"utf-8") + "&response_type=code" + "&scope=snsapi_userinfo"
+//                + "&state=STATE#wechat_redirect";
         String getCodeUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WXAuthUtil.APPID + "&redirect_uri="
-                + URLEncoder.encode(backUrl,"utf-8") + "&response_type=code" + "&scope=snsapi_userinfo"
+                + URLEncoder.encode(backUrl) + "&response_type=code" + "&scope=snsapi_userinfo"
                 + "&state=STATE#wechat_redirect";
         logger.info("获取code, getCodeUrl=" + getCodeUrl);
-        // response.sendRedirect(url);
+        //response.sendRedirect(getCodeUrl);
         return "redirect:" + getCodeUrl;// 必须重定向，否则不能成功
     }
 
     /**
      * 公众号微信登录授权回调函数
      *
-     * @param modelMap
-     * @param req
-     * @param resp
      * @return
      * @throws ServletException
      * @throws IOException
@@ -66,7 +98,9 @@ public class WXLoginController {
     @RequestMapping(value = "/callBack", method = RequestMethod.GET)
     @ResponseBody
     public String callBack() throws ServletException, IOException {
+        System.out.println("callback");
         String code = request.getParameter("code");
+        System.out.println("code: " + code);
         // 第二步：通过code换取网页授权access_token
         String getTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + WXAuthUtil.APPID + "&secret="
                 + WXAuthUtil.APPSECRET + "&code=" + code + "&grant_type=authorization_code";

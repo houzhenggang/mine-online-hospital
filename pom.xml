@@ -229,4 +229,29 @@
     </profiles>
 
 
+    <build>
+        <!--解决intellijIdea构建项目时，target/class目录下不存在mapper.xml文件-->
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.yaml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <!--            默认是resources下面的文件打包进target，但如果添加了上面的代码，resources下面的不自动打包进target，需要加下面的话-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.yaml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+
 </project>
